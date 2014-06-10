@@ -45,6 +45,9 @@
     <ClInclude Include="net_base.hpp">
       <Filter>work</Filter>
     </ClInclude>
+    <ClInclude Include="net_tcp.h">
+      <Filter>work</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
