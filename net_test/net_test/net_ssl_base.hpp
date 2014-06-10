@@ -13,7 +13,7 @@
 #include <boost/function.hpp>
 #include <assert.h>
 
-template<const char* T_PASSWORD = "test">
+template<size_t T_VERSION = 1>
 class net_ssl_base
 {
 public:
@@ -22,6 +22,7 @@ public:
 	};
 	~net_ssl_base(void)
 	{
+		socket_ = nullptr;
 	};
 public:
 	boost::shared_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> socket_;
@@ -34,7 +35,7 @@ public:
 protected:
 	static std::string get_password()
 	{
-		return T_PASSWORD;
+		return "test";
 	}
 public:
 	static boost::shared_ptr<boost::asio::ssl::context> new_context_server(boost::system::error_code& ec)
@@ -78,11 +79,11 @@ public:
 		{
 			return nullptr;
 		}
-		ptr->load_verify_file( "ca.pem",err);
+		ptr->load_verify_file( "ca.pem",ec);
 
 		return ptr;
 	}
-	
+
 	static boost::shared_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> new_socket(
 		boost::shared_ptr<boost::asio::io_service> io_,
 		boost::asio::ssl::context& ctx)
@@ -96,7 +97,7 @@ public:
 		boost::shared_ptr<boost::asio::ip::tcp::acceptor> ptr_,
 		boost::asio::ip::tcp::endpoint local_endpoint_, boost::asio::ssl::context& ctx)
 	{
-		auto s = new_socket(ctx);
+		auto s = new_socket(ptr_->get_io_service(),ctx);
 		ptr_->async_accept(s->lowest_layer(), yield[ec]);
 		if ( ec )
 			return ;
@@ -133,7 +134,7 @@ public:
 	static void yield_connect(boost::asio::yield_context yield,
 		boost::system::error_code &ec,
 		boost::shared_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> s,
-		boost::asio::ip::tcp::endpoint local_endpoint_)
+		boost::asio::ip::tcp::resolver::iterator local_endpoint_it)
 	{
 		if ( ec )
 			return ;
@@ -142,7 +143,7 @@ public:
 		s->set_verify_mode(boost::asio::ssl::verify_peer,ec);
 		s->set_verify_callback(	&net_ssl_base::verify_certificate, ec);
 
-		boost::asio::async_connect(s->lowest_layer(), local_endpoint_, yield[ec]);
+		boost::asio::async_connect(s->lowest_layer(), local_endpoint_it, yield[ec]);
 		if ( ec )
 		{
 			return ;

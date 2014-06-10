@@ -5,6 +5,8 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <string>
+#include <algorithm>
 #include <assert.h>
 
 /* Also update SONAME in the Makefile whenever you change these. */
@@ -345,15 +347,21 @@ public:
 	{
 		method = m;
 	}
-protected:
+	void insert_flags( enum flags f )
+	{
+		flag = f;
+	}
+public:
 	std::string url;
 	size_t version_major;
 	size_t version_minor;
 	enum http_method method;
 	size_t code;
 	std::string status;
+	enum flags flag;
 	T_HEAD header;
 	std::list<std::shared_ptr<std::vector<char>>> body_buff;
+
 };
 
 
@@ -361,10 +369,13 @@ template<typename T_RE = http_copy_buff<>>
 class http_work
 {
 public:
-	http_work(enum http_parser_type type)
+	explicit http_work(enum http_parser_type type)
 	{
 		http_parser_init(&hp,type);
 		hp.data = this;
+
+		message_continue = false;
+		alive = false;
 
 		hps.on_message_begin = std::bind(&http_work::on_message_begin,this,std::placeholders::_1);
 		hps.on_url = std::bind(&http_work::on_url,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
@@ -402,14 +413,20 @@ public:
 		return nullptr;
 	}
 
-	bool is_interrupter()
+	bool is_work()
 	{
-		return !message_continue;
+		return message_continue;
 	}
 
 	bool is_alive()
 	{
-		return 
+		return alive;
+	}
+
+	bool fetch_result( std::vector<std::shared_ptr<T_RE>>& out )
+	{
+		result.swap(out);
+		return true;
 	}
 
 protected:
@@ -445,6 +462,7 @@ protected:
 	int on_header_field(http_parser*, const char *data, size_t s)
 	{
 		key_temp.assign(data,s);
+		return 0;
 	}
 	int on_header_value(http_parser*, const char *data, size_t s)
 	{
@@ -455,7 +473,8 @@ protected:
 	{
 		op_ptr->insert_version(h->http_major, h->http_minor);
 		op_ptr->insert_status_code( h->status_code );
-		op_ptr->insert_method( h->method );
+		op_ptr->insert_method( static_cast<http_method>(h->method) );
+		op_ptr->insert_flags( static_cast<flags>(h->flags));
 
 		alive = !(0==http_should_keep_alive(h));
 		if ( !alive )
@@ -470,7 +489,7 @@ protected:
 		op_ptr->insert_body( data, s );
 		return 0;
 	}
-	int on_message_complete(http_parser*)
+	int on_message_complete(http_parser* h)
 	{
 		alive = !(0==http_should_keep_alive(h));
 		message_continue = false;
@@ -481,3 +500,100 @@ protected:
 
 };
 
+
+class net_url
+{
+public:
+	net_url(void){clear();};
+	~net_url(void){};
+protected:
+	// url
+	std::string url_buff;
+	std::string port_buff;
+	http_parser_url m_url;
+public:
+	void clear()
+	{
+		memset(&m_url,0,sizeof(m_url));
+		url_buff.clear();
+		port_buff.clear();
+	}
+
+	bool parser_url(std::string url, enum http_parser_type type = HTTP_REQUEST)
+	{
+		clear();
+		url_buff = url;
+
+		return 0 == http_parser_parse_url( url_buff.c_str(), url_buff.length(), (type != HTTP_REQUEST), &m_url);
+	}
+	/*
+	UF_SCHEMA           = 0
+	, UF_HOST             = 1
+	, UF_PORT             = 2
+	, UF_PATH             = 3
+	, UF_QUERY            = 4
+	, UF_FRAGMENT         = 5
+	, UF_USERINFO         = 6
+	, UF_MAX              = 7
+	*/
+	std::string get_infomation(enum http_parser_url_fields field) const
+	{
+		if ( m_url.field_set | (1<<field) )
+		{
+			return url_buff.substr(m_url.field_data[field].off,m_url.field_data[field].len);
+		}
+		return std::string();
+	}
+
+	std::string schema2port( std::string schema ) const
+	{
+		std::transform(schema.begin(),schema.end(),schema.begin(),tolower);
+		
+		if ( schema == "https" )
+			return "443";
+		else if ( schema == "ftp" )
+			return "21";
+		else if ( schema == "ssh" )
+			return "22";
+
+		return "80";
+	}
+
+public:
+	
+	static std::string make_up_get( const net_url& info )
+	{
+		assert(!info.get_infomation(UF_HOST).empty());
+		std::string ret;
+		ret = "GET " + info.get_infomation(UF_PATH)
+			+ info.get_infomation(UF_QUERY)
+			+ info.get_infomation(UF_FRAGMENT)
+			+ " HTTP/1.1\r\n"
+			"Accept: *.*\r\n"
+			"Host: " + info.get_infomation(UF_HOST) + "\r\n"
+			"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; EIE11;ZHCNWOL; rv:11.0) like Gecko\r\n"
+			"Accept-Encoding: gzip, deflate\r\n"
+			"Connection: Keep-Alive\r\n"
+			"DNT: 1\r\n"
+			"\r\n";
+		return ret;
+	}
+	//  
+	static std::string make_up_post( const net_url& info, std::string length, std::string type = "application/x-www-form-urlencoded" )
+	{
+		assert(!info.get_infomation(UF_HOST).empty());
+		std::string ret;
+		ret = "POST " + info.get_infomation(UF_PATH) + " HTTP/1.1\r\n"
+		"Accept: *.*\r\n"
+		"Host: " + info.get_infomation(UF_HOST) + "\r\n"
+		"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; EIE11;ZHCNWOL; rv:11.0) like Gecko\r\n"
+		"Accept-Encoding: gzip, deflate\r\n"
+		"Connection: Keep-Alive\r\n"
+		"DNT: 1\r\n"
+		"Content-Type: " + type + "\r\n"
+		"Content-Length: " + length + "\r\n"
+		"\r\n";
+		return ret;
+	}
+
+};

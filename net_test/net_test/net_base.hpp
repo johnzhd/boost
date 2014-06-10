@@ -25,11 +25,12 @@ class net_base
 {
 public:
 	net_base(boost::shared_ptr<boost::asio::io_service> net_io)
-		:socket_(boost::make_shared<boost::asio::ip::tcp::socket>(*net_io))
+		:socket_(new_socket(net_io))
 	{
 	};
 	~net_base(void)
 	{
+		socket_ = nullptr;
 	}
 protected:
 	boost::shared_ptr<boost::asio::ip::tcp::socket> socket_;
