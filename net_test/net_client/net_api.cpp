@@ -1,59 +1,64 @@
 #include "stdafx.h"
 #include "net_api.hpp"
 
-#include "net_tools.h"
-
-net_work::net_work(boost::shared_ptr<net_thread> t)
-	:thread_opt(t)
+net_thread::net_thread()
 {
+	make_shared(io_opt);
+	make_shared(signals_opt, *io_opt);
+	make_shared(timer_opt, *io_opt);
+
+	signals_opt->add(SIGINT);
+	signals_opt->add(SIGTERM);
+#if defined(SIGQUIT)
+	signals_opt->add(SIGQUIT);
+#endif // defined(SIGQUIT)
+	signals_opt->async_wait(boost::bind(&net_thread::signal_handle, this, _1, _2));
 }
 
-net_work::~net_work()
+net_thread::~net_thread()
 {
+
 }
 
-boost::asio::io_service & net_work::get_io()
+boost::shared_ptr<boost::asio::io_service> net_thread::get_io()
 {
-	// TODO: 在此处插入 return 语句
-	return *thread_opt->get_io();
+	return io_opt;
 }
 
-void net_work::stop_signal(int s)
+bool net_thread::run()
 {
-	s;
+	try
+	{
+		get_io()->run();
+		return true;
+	}
+	catch (const boost::system::error_code& e)
+	{
+		boost_log(error, "io running boost err: %1%", e.message());
+	}
+	catch (const std::exception& e)
+	{
+		boost_log(error, "io running system err: %1%", e.what());
+	}
+	catch (...)
+	{
+		boost_log(error, "io running unkown err.");
+	}
+	return false;
 }
 
-void net_work::demo_loop(boost::asio::yield_context yc)
+void net_thread::stop()
 {
-	protocal_type ptl(HTTPS);
-	boost::system::error_code ec;
-	boost::shared_ptr<b_net_socket_api> opt;
-	std::string ip, port, packet;
-	ip = "180.97.33.108";
-	port = "443";
-	packet = "GET / HTTP/1.1\r\nAccept: *.*\r\nHost: www.baidu.com:443\r\n\r\n";
-	make_shared(opt, ptl, thread_opt->get_io());
+	boost::system::error_code ec; // avoid the exception
+	timer_opt->cancel(ec);
+	get_io()->stop();
+}
 
- 	if (!opt->connect(yc, ec, to_endpoint(ip, port)))
+void net_thread::signal_handle(const boost::system::error_code & ec, int s)
+{
+	if (ec)
 	{
 		return;
 	}
-
-	if (0 == opt->send_at_least(yc, ec, packet.length(), packet))
-	{
-		return;
-	}
-
-	std::vector<char> v;
-	v.resize(2048);
-	if (0 == opt->recv(yc, ec, v))
-	{
-		return;
-	}
-
+	stop();
 }
-
-
-
-
-

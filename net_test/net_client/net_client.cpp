@@ -4,6 +4,7 @@
 #include "stdafx.h"
 
 #include "net_api.hpp"
+#include "task_work.h"
 
 int main()
 {
