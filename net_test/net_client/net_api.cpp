@@ -34,7 +34,7 @@ void net_work::demo_loop(boost::asio::yield_context yc)
 	packet = "GET / HTTP/1.1\r\nAccept: *.*\r\nHost: www.baidu.com:443\r\n\r\n";
 	make_shared(opt, ptl, thread_opt->get_io());
 
-	if (!opt->connect(yc, ec, to_endpoint(ip, port)))
+ 	if (!opt->connect(yc, ec, to_endpoint(ip, port)))
 	{
 		return;
 	}

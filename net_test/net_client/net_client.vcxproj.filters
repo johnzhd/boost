@@ -16,6 +16,12 @@
     <Filter Include="net">
       <UniqueIdentifier>{3c38ebdf-baaf-4426-95a7-77a6c90cc5cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="tools">
+      <UniqueIdentifier>{3e50c412-bcda-4f7f-ae11-dd9b40341421}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="work">
+      <UniqueIdentifier>{f6dca85f-bb82-4de9-9103-ef7b96a7d7ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -45,6 +51,21 @@
     <ClInclude Include="net_api.hpp">
       <Filter>net</Filter>
     </ClInclude>
+    <ClInclude Include="parser_tools.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="http_parser_api.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="http_parser.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="gzip.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="task_work.h">
+      <Filter>work</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -64,6 +85,21 @@
     </ClCompile>
     <ClCompile Include="net_api.cpp">
       <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="parser_tools.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="http_parser.c">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="http_parser_api.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="gzip.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="task_work.cpp">
+      <Filter>work</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

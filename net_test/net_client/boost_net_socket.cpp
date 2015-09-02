@@ -76,7 +76,7 @@ bool https_base::connect(boost::asio::yield_context& yc, boost::system::error_co
 	{
 		return false;
 	}
-	s_opt.set_verify_callback(boost::bind(https_base::verify_certificate, this, _1, _2), ec);
+	s_opt.set_verify_callback(boost::bind(&https_base::verify_certificate, this, _1, _2), ec);
 	if (ec)
 	{
 		return false;

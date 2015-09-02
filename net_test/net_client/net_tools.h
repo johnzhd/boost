@@ -3,6 +3,8 @@
 #include <string>
 #include <boost/asio.hpp>
 
+#include "gzip.h"
+
 
 inline std::string to_ip(unsigned int ip)
 {
