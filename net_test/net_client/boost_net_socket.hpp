@@ -26,7 +26,7 @@
 
 
 
-inline boost::asio::ip::tcp::endpoint dns(boost::asio::yield_context yc,
+boost::asio::ip::tcp::endpoint dns(boost::asio::yield_context yc,
 	boost::system::error_code& ec,
 	boost::asio::ip::tcp::resolver& resolver,
 	std::string address,

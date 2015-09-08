@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "parser_tools.h"
 
-json_parser::json_parser(std::string text)
+#include <boost/interprocess/streams/bufferstream.hpp>
+
+json_parser::json_parser(const char * data, size_t size)
 {
-	std::stringstream ss(text);
+	boost::interprocess::ibufferstream ss(data, size);
 	try
 	{
 		boost::property_tree::read_json(ss, core);

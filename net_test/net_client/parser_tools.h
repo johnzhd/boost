@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <sstream>
+#include <vector>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -10,7 +10,7 @@
 class json_parser
 {
 public:
-	json_parser(std::string text);
+	json_parser(const char * data, size_t size);
 	~json_parser();
 
 	std::string make();

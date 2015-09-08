@@ -5,7 +5,6 @@ net_thread::net_thread()
 {
 	make_shared(io_opt);
 	make_shared(signals_opt, *io_opt);
-	make_shared(timer_opt, *io_opt);
 
 	signals_opt->add(SIGINT);
 	signals_opt->add(SIGTERM);
@@ -50,7 +49,6 @@ bool net_thread::run()
 void net_thread::stop()
 {
 	boost::system::error_code ec; // avoid the exception
-	timer_opt->cancel(ec);
 	get_io()->stop();
 }
 
@@ -61,4 +59,44 @@ void net_thread::signal_handle(const boost::system::error_code & ec, int s)
 		return;
 	}
 	stop();
+}
+
+boost::shared_ptr<b_net_socket_api> net_thread::make_socket(protocal_type type)
+{
+	boost::shared_ptr<b_net_socket_api> opt;
+	return make_shared(opt, type, io_opt);
+}
+
+boost::shared_ptr<boost::asio::ip::tcp::resolver> net_thread::make_resolver()
+{
+	return boost::make_shared<boost::asio::ip::tcp::resolver>(*io_opt);
+}
+
+boost::shared_ptr<boost::asio::deadline_timer> net_thread::make_timer()
+{
+	return boost::make_shared<boost::asio::deadline_timer>(*io_opt);
+}
+
+void net_thread::wait_time(boost::shared_ptr<boost::asio::deadline_timer> timer_opt, boost::posix_time::time_duration time, boost::asio::yield_context & yc, boost::system::error_code & ec)
+{
+	assert(timer_opt);
+	timer_opt->expires_from_now(time, ec);
+	if (ec)
+		return;
+	timer_opt->async_wait(yc[ec]);
+}
+
+void net_thread::cancel_time(boost::shared_ptr<boost::asio::deadline_timer> timer_opt, boost::system::error_code & ec)
+{
+	assert(timer_opt);
+	timer_opt->cancel(ec);
+}
+
+boost::posix_time::time_duration make_time(long h, long m, long s, size_t milliseconds, size_t microseconds)
+{
+	return boost::posix_time::hours(h)
+		+ boost::posix_time::minutes(m)
+		+ boost::posix_time::seconds(s)
+		+ boost::posix_time::milliseconds(milliseconds)
+		+ boost::posix_time::microseconds(microseconds);
 }

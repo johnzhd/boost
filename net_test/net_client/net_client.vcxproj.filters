@@ -60,11 +60,14 @@
     <ClInclude Include="http_parser.h">
       <Filter>tools</Filter>
     </ClInclude>
-    <ClInclude Include="gzip.h">
-      <Filter>tools</Filter>
-    </ClInclude>
     <ClInclude Include="task_work.h">
       <Filter>work</Filter>
+    </ClInclude>
+    <ClInclude Include="http_maker.hpp">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="gzip_api.h">
+      <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -95,11 +98,11 @@
     <ClCompile Include="http_parser_api.cpp">
       <Filter>tools</Filter>
     </ClCompile>
-    <ClCompile Include="gzip.cpp">
-      <Filter>tools</Filter>
-    </ClCompile>
     <ClCompile Include="task_work.cpp">
       <Filter>work</Filter>
+    </ClCompile>
+    <ClCompile Include="gzip_api.cpp">
+      <Filter>tools</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

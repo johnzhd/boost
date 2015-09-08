@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "gzip.h"
+#include "gzip_api.h"
 
 
 

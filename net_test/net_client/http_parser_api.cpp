@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "http_parser_api.h"
 
+#include <algorithm>
+
+#include "boost_net_base.hpp"
 
 http_parser_api::http_parser_api()
 {
@@ -33,6 +36,23 @@ std::string http_parser_api::get_err()
 		break;
 	}
 	return "";
+}
+
+std::string http_parser_api::get_head(std::string key)
+{
+	auto it = head_content.find(key);
+	if (it == head_content.end())
+		return std::string();
+
+	return it->second;
+}
+
+bool http_parser_api::search_head(std::string key, std::string match)
+{
+	auto it = head_content.find(key);
+	if (it == head_content.end())
+		return false;
+	return it->second.find(match) != std::string::npos;
 }
 
 bool http_parser_api::is_err()
@@ -111,3 +131,76 @@ bool http_parser_api::is_done()
 	return b_head_finished || b_finished;
 }
 
+bool url_parser(std::string url, std::string & schema, std::string & domain, std::string & port, std::string & path, std::string & param)
+{
+	struct http_parser_url st_u;
+	const char * p = url.c_str();
+	if (0 != http_parser_parse_url(p, url.length(), true, &st_u))
+		return false;
+
+
+	if (st_u.field_set & (1 << UF_SCHEMA))
+	{
+		schema.assign(p + st_u.field_data[UF_SCHEMA].off, st_u.field_data[UF_SCHEMA].len);
+	}
+	else
+	{
+		schema = "http";
+	}
+	std::transform(schema.begin(), schema.end(), schema.begin(), tolower);
+
+	if (st_u.field_set & (1 << UF_PORT))
+	{
+		port = format_string("%1%", st_u.port);
+	}
+	else
+	{
+		if (schema == "http")
+		{
+			port = "80";
+		}
+		else if (schema == "ftp")
+		{
+			port = "21";
+		}
+		else if (schema == "ssh")
+		{
+			port = "22";
+		}
+		else if (schema == "smtp")
+		{
+			port = "25";
+		}
+		else if (schema == "https")
+		{
+			port = "443";
+		}
+		else if (schema == "pop3")
+		{
+			port = "109";
+		}
+		else if (schema == "rpc")
+		{
+			port = "110";
+		}
+		else
+		{
+			port = "80";
+		}
+		
+	}
+	if (st_u.field_set & (1 << UF_PATH))
+	{
+		path.assign(p + st_u.field_data[UF_PATH].off, st_u.field_data[UF_PATH].len);
+	}
+
+	if (st_u.field_set & (1 << UF_QUERY))
+	{
+		param.assign(p + st_u.field_data[UF_QUERY].off+1, st_u.field_data[UF_QUERY].len);
+	}
+	if (st_u.field_set & (1 << UF_FRAGMENT))
+	{
+		param.append(p + st_u.field_data[UF_FRAGMENT].off, st_u.field_data[UF_FRAGMENT].len);
+	}
+	return true;
+}

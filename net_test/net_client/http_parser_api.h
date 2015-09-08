@@ -93,7 +93,6 @@ protected:
 
 	bool parser_execute(const char *data, size_t len);
 
-	std::string get_err();
 public:
 	int on_message_begin(http_parser* p);
 	int on_headers_complete(http_parser* p);
@@ -126,6 +125,10 @@ public:
 	void push(const char* buff, size_t length);
 	bool is_done();
 	bool is_err();
+	std::string get_err();
+
+	std::string get_head(std::string key);
+	bool search_head(std::string key, std::string match);
 };
 
 
@@ -159,5 +162,7 @@ inline bool url_parser_simple(std::string src, std::string& ptl, std::string& do
 	return true;
 }
 
+
+bool url_parser(std::string url, std::string& schema, std::string& domain, std::string& port, std::string& path, std::string& param);
 
 

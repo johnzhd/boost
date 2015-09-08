@@ -9,13 +9,16 @@
 int main()
 {
 	boost::shared_ptr<net_thread> thread_opt;
-	boost::shared_ptr<net_work> work_opt;
+	boost::shared_ptr<task_work> work_opt;
 
 	make_shared(thread_opt);
 
 	make_shared(work_opt, thread_opt);
 
-	thread_opt->spawn_start(boost::bind(&net_work::demo_loop, work_opt, _1));
+	work_opt->task_list.push_back("http://www.jisilu.cn/data/cf/cf_list/?___t=1441521364542");
+
+	thread_opt->spawn_start(boost::bind(&task_work::timer_loop, work_opt, _1));
+	thread_opt->spawn_start(boost::bind(&task_work::work_loop, work_opt, _1));
 
 	thread_opt->run();
 
