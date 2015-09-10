@@ -36,4 +36,9 @@ public:
 	boost::shared_ptr<b_net_socket_api> make_socket(protocal_type type);
 public:
 	boost::asio::io_service& get_io();
+
+	inline void spawn_start(std::function<void(boost::asio::yield_context yc)>& f)
+	{
+		thread_opt->spawn_start(f);
+	}
 };

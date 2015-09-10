@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "b_net_socket_api.h"
 
 
@@ -22,16 +24,10 @@ public:
 
 public:
 	////// client work zone //////////
-	template<typename Function>
-	void spawn_start(Function f)
+	inline void spawn_start(std::function<void(boost::asio::yield_context yc)>& f)
 	{
 		boost::asio::spawn(*get_io(), f);
 	}
-
-	//inline void spawn_start(boost::function<void(boost::asio::yield_context yc)>f)
-	//{
-	//	boost::asio::spawn(*get_io(), f);
-	//}
 
 
 
