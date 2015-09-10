@@ -22,11 +22,16 @@ public:
 
 public:
 	////// client work zone //////////
-	template<typename Func>
-	void spawn_start(Func& f)
+	template<typename Function>
+	void spawn_start(Function f)
 	{
 		boost::asio::spawn(*get_io(), f);
 	}
+
+	//inline void spawn_start(boost::function<void(boost::asio::yield_context yc)>f)
+	//{
+	//	boost::asio::spawn(*get_io(), f);
+	//}
 
 
 
@@ -37,7 +42,7 @@ public:
 	boost::shared_ptr<boost::asio::deadline_timer> make_timer();
 
 	static void wait_time(boost::shared_ptr<boost::asio::deadline_timer> timer_opt, boost::posix_time::time_duration time,
-		boost::asio::yield_context& yc, boost::system::error_code& ec);
+		boost::asio::yield_context yc, boost::system::error_code& ec);
 
 	static void cancel_time(boost::shared_ptr<boost::asio::deadline_timer> timer_opt, boost::system::error_code& ec);
 };

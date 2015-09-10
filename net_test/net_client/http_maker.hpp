@@ -14,23 +14,27 @@ inline std::string http_request_url(std::string schema, std::string host, std::s
 	if (b_post)
 	{
 		return format_string("POST %1% HTTP/1.1\r\n"
-			"Host: %3%:%4%\r\n"
-			"User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)\r\n"
 			"Content-Type: application/x-www-form-urlencoded\r\n"
-			"Content-Length: %5%\r\n"
+			"Content-Length: %4%\r\n"
+			"Connection: Keep-Alive\r\n"
 			"DNT: 1\r\n"
+			"Host: %3%\r\n"
+			"User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)\r\n"
 			"\r\n"
-			"%2%", path, param, host, port, param.length());
+			"%2%", path, param, host, param.length());
 	}
 	else
 	{
-		return format_string("GET %1%?%2% HTTP/1.1\r\n"
-			"Host: %3%:%4%\r\n"
-			"Accept: *.*\r\n"
-			"User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)\r\n"
-			"DNT: 1\r\n"
+		return format_string("GET %1%%4%%2% HTTP/1.1\r\n"
+			"Accept: text/html, application/xhtml+xml, image/jxr, */*\r\n"
+			"Accept-Encoding: gzip, deflate\r\n"
+			"Accept-Language: zh-CN\r\n"
+			"Cache-Control: no-cache\r\n"
 			"Connection: Keep-Alive\r\n"
-			"\r\n", path, param, host, port);
+			"DNT: 1\r\n"
+			"Host: %3%\r\n"
+			"User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)\r\n"
+			"\r\n", path, param, host, (param.empty()?"":"?"));
 	}
 	return std::string();
 }

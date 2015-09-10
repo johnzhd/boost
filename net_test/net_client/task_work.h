@@ -5,50 +5,35 @@
 
 #include "net_api.hpp"
 
-// this class is a demo
-class net_work
+#include "parser_tools.h"
+#include "http_parser_api.h"
+#include "http_maker.hpp"
+#include "gzip_api.h"
+
+
+class task_work_base
 {
 public:
-	net_work(boost::shared_ptr<net_thread> t);
-	~net_work();
-protected:
-	boost::shared_ptr<net_thread> thread_opt;
-	boost::asio::io_service& get_io();
-public:
-	void stop_signal(int s);
-public:
-	void demo_loop(boost::asio::yield_context yc);
-};
-
-
-
-// this class is demo2
-class task_work
-{
-public:
-	task_work(boost::shared_ptr<net_thread> net);
-	~task_work();
+	task_work_base(boost::shared_ptr<net_thread> net);
+	virtual ~task_work_base();
 protected:
 	boost::shared_ptr<net_thread> thread_opt;
 	boost::shared_ptr<boost::asio::ip::tcp::resolver> dns_opt;
 	boost::system::error_code g_ec;
 public:
-	void stop_signal(int s);
-public:
-	void work_loop(boost::asio::yield_context yc);
-	void timer_loop(boost::asio::yield_context yc);
-public:
 	std::string get_last_err();
 public:
-	std::vector<std::string> task_list;
-	std::string get_task();
-	size_t get_task_remain();
+	boost::shared_ptr<boost::asio::ip::tcp::resolver> get_dns();
+
+	template<typename T>
+	boost::asio::ip::tcp::endpoint make_endpoint(const T& ip, const T& port)
+	{
+		return to_endpoint(ip, port);
+	}
+
+	boost::asio::ip::tcp::endpoint get_endpoint(boost::asio::yield_context yc, boost::system::error_code&ec, std::string ip, std::string port);
+
+	boost::shared_ptr<b_net_socket_api> make_socket(protocal_type type);
+public:
+	boost::asio::io_service& get_io();
 };
-
-
-
-
-
-
-
-

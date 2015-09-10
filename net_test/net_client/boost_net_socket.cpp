@@ -10,8 +10,7 @@ boost::asio::ip::tcp::endpoint dns(boost::asio::yield_context yc,
 	std::string address,
 	std::string port)
 {
-	boost::asio::ip::tcp::resolver::query query(address, port);
-	auto it = resolver.async_resolve(query, yc[ec]);
+	auto it = dns(yc[ec], resolver, address, port);
 	if (ec)
 		return boost::asio::ip::tcp::endpoint();
 	return *it;
@@ -30,15 +29,11 @@ http_base::~http_base(void)
 
 }
 
-bool http_base::connect(boost::asio::yield_context& yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep)
+bool http_base::connect(boost::asio::yield_context yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep)
 {
-	s_opt.async_connect(ep, yc[ec]);
+	connect(yc[ec],ep);
 	//boost::asio::async_connect(s_opt, it, yc[ec]);
-	if (ec)
-	{
-		return false;
-	}
-	return true;
+	return !ec;
 }
 
 void http_base::cancel(void)
@@ -69,8 +64,9 @@ https_base::~https_base(void)
 
 }
 
-bool https_base::connect(boost::asio::yield_context& yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep)
+bool https_base::connect(boost::asio::yield_context yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep)
 {
+	/*
 	s_opt.set_verify_mode(boost::asio::ssl::verify_peer, ec);
 	if (ec)
 	{
@@ -94,6 +90,15 @@ bool https_base::connect(boost::asio::yield_context& yc, boost::system::error_co
 	{
 		return false;
 	}
+	return true;
+	*/
+	connect(yc[ec], ep);
+	if (ec)
+		return false;
+	
+	handshake(yc[ec]);
+	if (ec)
+		return false;
 	return true;
 }
 

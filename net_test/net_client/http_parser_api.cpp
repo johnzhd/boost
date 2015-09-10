@@ -128,14 +128,16 @@ void http_parser_api::push(const char * buff, size_t length)
 
 bool http_parser_api::is_done()
 {
-	return b_head_finished || b_finished;
+	return b_finished;
 }
 
 bool url_parser(std::string url, std::string & schema, std::string & domain, std::string & port, std::string & path, std::string & param)
 {
 	struct http_parser_url st_u;
 	const char * p = url.c_str();
-	if (0 != http_parser_parse_url(p, url.length(), true, &st_u))
+	memset(&st_u, 0, sizeof(st_u));
+
+	if (0 != http_parser_parse_url(p, url.length(), false, &st_u))
 		return false;
 
 
@@ -189,14 +191,24 @@ bool url_parser(std::string url, std::string & schema, std::string & domain, std
 		}
 		
 	}
+
+	if (st_u.field_set & (1 << UF_HOST))
+	{
+		domain.assign(p + st_u.field_data[UF_HOST].off, st_u.field_data[UF_HOST].len);
+	}
+
 	if (st_u.field_set & (1 << UF_PATH))
 	{
 		path.assign(p + st_u.field_data[UF_PATH].off, st_u.field_data[UF_PATH].len);
 	}
+	else
+	{
+		path = "/";
+	}
 
 	if (st_u.field_set & (1 << UF_QUERY))
 	{
-		param.assign(p + st_u.field_data[UF_QUERY].off+1, st_u.field_data[UF_QUERY].len);
+		param.assign(p + st_u.field_data[UF_QUERY].off+1, st_u.field_data[UF_QUERY].len-1);
 	}
 	if (st_u.field_set & (1 << UF_FRAGMENT))
 	{

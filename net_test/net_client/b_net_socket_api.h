@@ -58,11 +58,11 @@ protected:
 
 public:
 
-	bool connect(boost::asio::yield_context& yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep);
+	bool connect(boost::asio::yield_context yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep);
 
 
 	template<typename... ARGS>
-	size_t send(boost::asio::yield_context& yc, boost::system::error_code& ec, const ARGS&...args)
+	size_t send(boost::asio::yield_context yc, boost::system::error_code& ec, const ARGS&...args)
 	{
 		size_t ret = 0;
 		start_deadline(dlt_send, ec);
@@ -87,7 +87,7 @@ public:
 	}
 
 	template<typename... ARGS>
-	size_t send_at_least(boost::asio::yield_context& yc, boost::system::error_code& ec, size_t at_least_size, const ARGS&...args)
+	size_t send_at_least(boost::asio::yield_context yc, boost::system::error_code& ec, size_t at_least_size, const ARGS&...args)
 	{
 		size_t ret = 0;
 		start_deadline(dlt_send, ec);
@@ -112,7 +112,7 @@ public:
 	}
 
 	template<typename... ARGS>
-	size_t recv(boost::asio::yield_context& yc, boost::system::error_code& ec, ARGS&...args)
+	size_t recv(boost::asio::yield_context yc, boost::system::error_code& ec, ARGS&...args)
 	{
 		size_t ret = 0;
 		start_deadline(dlt_recv, ec);

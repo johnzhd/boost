@@ -77,7 +77,7 @@ boost::shared_ptr<boost::asio::deadline_timer> net_thread::make_timer()
 	return boost::make_shared<boost::asio::deadline_timer>(*io_opt);
 }
 
-void net_thread::wait_time(boost::shared_ptr<boost::asio::deadline_timer> timer_opt, boost::posix_time::time_duration time, boost::asio::yield_context & yc, boost::system::error_code & ec)
+void net_thread::wait_time(boost::shared_ptr<boost::asio::deadline_timer> timer_opt, boost::posix_time::time_duration time, boost::asio::yield_context yc, boost::system::error_code & ec)
 {
 	assert(timer_opt);
 	timer_opt->expires_from_now(time, ec);

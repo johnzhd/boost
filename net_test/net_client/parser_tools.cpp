@@ -1,21 +1,7 @@
 #include "stdafx.h"
 #include "parser_tools.h"
 
-#include <boost/interprocess/streams/bufferstream.hpp>
-
-json_parser::json_parser(const char * data, size_t size)
-{
-	boost::interprocess::ibufferstream ss(data, size);
-	try
-	{
-		boost::property_tree::read_json(ss, core);
-
-	}
-	catch (const boost::property_tree::json_parser_error& e)
-	{
-		str_err = e.message();
-	}
-}
+#include <sstream>
 
 json_parser::~json_parser() {}
 
@@ -37,20 +23,6 @@ std::string json_parser::make()
 std::string json_parser::get_last_err()
 {
 	return str_err;
-}
-
-xml_parser::xml_parser(std::string text)
-{
-	std::stringstream ss(text);
-	try
-	{
-		boost::property_tree::read_xml(ss, core);
-
-	}
-	catch (const boost::property_tree::xml_parser_error& e)
-	{
-		str_err = e.message();
-	}
 }
 
 xml_parser::~xml_parser() {}

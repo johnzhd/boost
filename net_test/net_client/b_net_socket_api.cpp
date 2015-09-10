@@ -69,7 +69,7 @@ size_t b_net_socket_api::get_dlt_time(dlt_type no)
 	return v_dlt[no];
 }
 
-bool b_net_socket_api::connect(boost::asio::yield_context & yc, boost::system::error_code & ec, boost::asio::ip::tcp::endpoint ep)
+bool b_net_socket_api::connect(boost::asio::yield_context yc, boost::system::error_code & ec, boost::asio::ip::tcp::endpoint ep)
 {
 	bool ret = false;
 	start_deadline(dlt_connect, ec);

@@ -32,6 +32,16 @@ boost::asio::ip::tcp::endpoint dns(boost::asio::yield_context yc,
 	std::string address,
 	std::string port);
 
+template<typename Func>
+auto dns(Func handler,
+	boost::asio::ip::tcp::resolver& resolver,
+	std::string address,
+	std::string port)
+{
+	boost::asio::ip::tcp::resolver::query query(address, port);
+	return resolver.async_resolve(query, handler);
+}
+
 
 typedef enum protocal_type
 {
@@ -47,17 +57,37 @@ public:
 public:
 	boost::asio::ip::tcp::socket s_opt;
 public:
-	bool connect(boost::asio::yield_context& yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep);
+	bool connect(boost::asio::yield_context yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep);
+
+	template<typename Func>
+	void connect(Func handler, boost::asio::ip::tcp::endpoint ep)
+	{
+		s_opt.async_connect(ep, handler);
+	}
 
 	void cancel(void);
 
+	template<typename Func, typename ...ARGS>
+	auto send(Func handler, ARGS&...args)
+	{
+		return s_opt.async_write_some(boost::asio::buffer(args...), handler);
+	}
 
 	template<typename ...ARGS>
 	size_t send(boost::asio::yield_context yc,
 		boost::system::error_code& ec,
 		ARGS&...args)
 	{
-		return s_opt.async_write_some(boost::asio::buffer(args...), yc[ec]);
+		return send(yc[ec], args...);
+	}
+
+	template<typename Func, typename ...ARGS>
+	size_t send_at_least(Func handler,
+		size_t at_least_size,
+		ARGS& ...args)
+	{
+		return boost::asio::async_write(s_opt, boost::asio::buffer(args...), boost::asio::transfer_at_least(at_least_size), handler);
+		//return s_opt.async_write_some(s_opt, boost::asio::buffer(args...), yc[ec]);
 	}
 
 	template<typename ...ARGS>
@@ -66,9 +96,15 @@ public:
 		size_t at_least_size,
 		ARGS& ...args)
 	{
-		return boost::asio::async_write(s_opt, boost::asio::buffer(args...), boost::asio::transfer_at_least(at_least_size), yc[ec]);
+		return send_at_least(yc[ec], at_least_size, args...);
 		//return s_opt.async_write_some(s_opt, boost::asio::buffer(args...), yc[ec]);
+	}
 
+	template<typename Func, typename ...ARGS>
+	size_t recv(Func handler,
+		ARGS&...args)
+	{
+		return s_opt.async_read_some(boost::asio::buffer(args...), handler);
 	}
 
 	template<typename ...ARGS>
@@ -76,7 +112,7 @@ public:
 		boost::system::error_code& ec,
 		ARGS&...args)
 	{
-		return s_opt.async_read_some(boost::asio::buffer(args...), yc[ec]);
+		return recv(yc[ec], args...);
 	}
 
 public:
@@ -94,16 +130,47 @@ public:
 public:
 	boost::asio::ssl::stream<boost::asio::ip::tcp::socket> s_opt;
 public:
-	bool connect(boost::asio::yield_context& yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep);
+
+	template<typename Func>
+	void connect(Func handler, boost::asio::ip::tcp::endpoint ep)
+	{
+		s_opt.set_verify_mode(boost::asio::ssl::verify_peer);
+		s_opt.set_verify_callback(boost::bind(&https_base::verify_certificate, this, _1, _2));
+		s_opt.lowest_layer().async_connect(ep,handler);
+	}
+
+	template<typename Func>
+	void handshake(Func handler)
+	{
+		s_opt.async_handshake(boost::asio::ssl::stream_base::client, handler);
+	}
+
+	bool connect(boost::asio::yield_context yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep);
 
 	void cancel(void);
+
+	template<typename Func, typename ...ARGS>
+	size_t send(Func handler,
+		ARGS&...args)
+	{
+		return s_opt.async_write_some(boost::asio::buffer(args...), handler);
+	}
 
 	template<typename ...ARGS>
 	size_t send(boost::asio::yield_context yc,
 		boost::system::error_code& ec,
 		ARGS&...args)
 	{
-		return s_opt.async_write_some(boost::asio::buffer(args...), yc[ec]);
+		return send(yc[ec], args...);
+	}
+
+	template<typename Func, typename ...ARGS>
+	size_t send_at_least(Func handler,
+		size_t at_least_size,
+		ARGS& ...args)
+	{
+		return boost::asio::async_write(s_opt, boost::asio::buffer(args...), boost::asio::transfer_at_least(at_least_size), handler);
+		//return s_opt.async_write_some(boost::asio::buffer(args...), yc[ec]);
 	}
 
 	template<typename ...ARGS>
@@ -112,8 +179,16 @@ public:
 		size_t at_least_size,
 		ARGS& ...args)
 	{
-		return boost::asio::async_write(s_opt, boost::asio::buffer(args...), boost::asio::transfer_at_least(at_least_size), yc[ec]);
+		return send_at_least(yc[ec], at_least_size, args...);
 		//return s_opt.async_write_some(boost::asio::buffer(args...), yc[ec]);
+	}
+
+
+	template<typename Func, typename ...ARGS>
+	size_t recv(Func handler,
+		ARGS&...args)
+	{
+		return s_opt.async_read_some(boost::asio::buffer(args...), handler);
 	}
 
 	template<typename ...ARGS>
@@ -121,7 +196,7 @@ public:
 		boost::system::error_code& ec,
 		ARGS&...args)
 	{
-		return s_opt.async_read_some(boost::asio::buffer(args...), yc[ec]);
+		return recv(yc[ec], args...);
 	}
 
 
@@ -168,6 +243,14 @@ public:
 protected:
 	std::vector<unsigned char> extern_info;
 };
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////// server ///////////////////////////////////////////////////////////
+
+
+
+
 
 
 

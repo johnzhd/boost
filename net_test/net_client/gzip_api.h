@@ -53,6 +53,7 @@ public:
 		std::copy(result_buff.begin(), result_buff.end(), ret.begin());
 		return true;
 	}
+
 public:
 	std::vector<byte> result_buff;
 	CryptoPP::Gunzip unner;

@@ -153,6 +153,7 @@
     <ClInclude Include="boost_net_base.hpp" />
     <ClInclude Include="boost_net_socket.hpp" />
     <ClInclude Include="b_net_socket_api.h" />
+    <ClInclude Include="demo_work.hpp" />
     <ClInclude Include="gzip_api.h" />
     <ClInclude Include="http_maker.hpp" />
     <ClInclude Include="http_parser.h" />
