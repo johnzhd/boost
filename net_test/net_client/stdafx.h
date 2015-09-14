@@ -13,3 +13,8 @@
 
 
 // TODO:  在此处引用程序需要的其他头文件
+
+// This warning is a exception occur in destructor.
+// In boost & cyptpp lib
+#pragma warning (disable:4297)
+

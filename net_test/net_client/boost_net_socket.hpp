@@ -49,13 +49,24 @@ typedef enum protocal_type
 	HTTPS,     // for https_base
 }protocal_type;
 
-class http_base
+class base_core
 {
+public:
+	base_core(boost::asio::io_service& io);
+	virtual ~base_core();
+public:
+};
+
+class http_base : public boost::noncopyable
+{
+public:
+	typedef boost::asio::ip::tcp::socket lowsest_layer_socket_type;
 public:
 	http_base(boost::asio::io_service& io);
 	~http_base(void);
 public:
 	boost::asio::ip::tcp::socket s_opt;
+	lowsest_layer_socket_type& get_socket();
 public:
 	bool connect(boost::asio::yield_context yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep);
 
@@ -63,6 +74,12 @@ public:
 	void connect(Func handler, boost::asio::ip::tcp::endpoint ep)
 	{
 		s_opt.async_connect(ep, handler);
+	}
+
+	template<typename Func>
+	void handshake(Func handler, boost::asio::ssl::stream_base::handshake_type t = boost::asio::ssl::stream_base::client)
+	{
+		// nothing
 	}
 
 	void cancel(void);
@@ -122,13 +139,22 @@ public:
 
 
 
-class https_base
+class https_base : public boost::noncopyable
 {
 public:
+	typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket>::lowest_layer_type lowsest_layer_socket_type;
+public:
 	https_base(boost::asio::io_service& io);
+	https_base(boost::asio::io_service& io, boost::shared_ptr<boost::asio::ssl::context> ctx);
+
 	~https_base(void);
 public:
 	boost::asio::ssl::stream<boost::asio::ip::tcp::socket> s_opt;
+
+	lowsest_layer_socket_type& get_socket()
+	{
+		return s_opt.lowest_layer();
+	}
 public:
 
 	template<typename Func>
@@ -140,9 +166,9 @@ public:
 	}
 
 	template<typename Func>
-	void handshake(Func handler)
+	void handshake(Func handler, boost::asio::ssl::stream_base::handshake_type t = boost::asio::ssl::stream_base::client)
 	{
-		s_opt.async_handshake(boost::asio::ssl::stream_base::client, handler);
+		s_opt.async_handshake(t, handler);
 	}
 
 	bool connect(boost::asio::yield_context yc, boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep);
@@ -248,7 +274,44 @@ protected:
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////// server ///////////////////////////////////////////////////////////
 
+class http_server_base
+{
+public:
+	http_server_base(boost::asio::io_service& io);
+	~http_server_base();
+protected:
+	boost::shared_ptr<boost::asio::ip::tcp::resolver> resolver_opt;
+	boost::shared_ptr<boost::asio::ip::tcp::acceptor> accept_opt;
+	boost::shared_ptr<boost::asio::ssl::context> ctx_opt;
+public:
+	boost::asio::io_service& get_io();
+public:
+	boost::function<void(boost::asio::ip::tcp::socket s)> cbfunc_accept_one;
 
+	void bind_listen(boost::system::error_code& ec, boost::asio::ip::tcp::endpoint ep);
+
+	template<typename Func, typename Protocol, typename SocketService>
+	void accept(Func handler, boost::asio::basic_socket<Protocol, SocketService>& s)
+	{
+		accept_opt->async_accept(s, handler);
+	}
+
+	template<typename Protocol, typename SocketService>
+	void accept(boost::asio::yield_context yc, boost::system::error_code& ec, boost::asio::basic_socket<Protocol, SocketService>& s)
+	{
+		accept(yc[ec], s);
+	}
+
+	void cancel()
+	{
+		if(accept_opt)
+			accept_opt->cancel();
+	}
+public:
+	static std::string get_password(std::size_t max_length, boost::asio::ssl::context_base::password_purpose purpose);
+public:
+	boost::shared_ptr<boost::asio::ssl::context> new_context(boost::system::error_code& ec);
+};
 
 
 

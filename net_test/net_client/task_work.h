@@ -34,11 +34,16 @@ public:
 	boost::asio::ip::tcp::endpoint get_endpoint(boost::asio::yield_context yc, boost::system::error_code&ec, std::string ip, std::string port);
 
 	boost::shared_ptr<b_net_socket_api> make_socket(protocal_type type);
+
+	boost::shared_ptr<b_net_acceptor_api> make_acceptor();
 public:
 	boost::asio::io_service& get_io();
 
-	inline void spawn_start(std::function<void(boost::asio::yield_context yc)>& f)
+	inline void spawn_start(boost::function<void(boost::asio::yield_context yc)>& f)
 	{
 		thread_opt->spawn_start(f);
 	}
 };
+
+
+

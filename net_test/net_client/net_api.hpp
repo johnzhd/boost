@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-
 #include "b_net_socket_api.h"
 
 
@@ -24,7 +22,7 @@ public:
 
 public:
 	////// client work zone //////////
-	inline void spawn_start(std::function<void(boost::asio::yield_context yc)>& f)
+	inline void spawn_start(boost::function<void(boost::asio::yield_context yc)>& f)
 	{
 		boost::asio::spawn(*get_io(), f);
 	}
@@ -33,6 +31,8 @@ public:
 
 public:
 	boost::shared_ptr<b_net_socket_api> make_socket(protocal_type type);
+	boost::shared_ptr<b_net_acceptor_api> make_acceptor();
+
 	boost::shared_ptr<boost::asio::ip::tcp::resolver> make_resolver();
 public:
 	boost::shared_ptr<boost::asio::deadline_timer> make_timer();

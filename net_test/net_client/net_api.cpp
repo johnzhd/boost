@@ -67,6 +67,13 @@ boost::shared_ptr<b_net_socket_api> net_thread::make_socket(protocal_type type)
 	return make_shared(opt, type, io_opt);
 }
 
+
+boost::shared_ptr<b_net_acceptor_api> net_thread::make_acceptor()
+{
+	boost::shared_ptr<b_net_acceptor_api> opt;
+	return make_shared(opt, io_opt);
+}
+
 boost::shared_ptr<boost::asio::ip::tcp::resolver> net_thread::make_resolver()
 {
 	return boost::make_shared<boost::asio::ip::tcp::resolver>(*io_opt);

@@ -5,31 +5,20 @@
 
 #include "net_api.hpp"
 #include "get_url_work.hpp"
+#include "echo_server.hpp"
 
 int main()
 {
 	boost::shared_ptr<net_thread> thread_opt;
-	boost::shared_ptr<get_url_work<>> work_opt;
+	boost::shared_ptr<echo_server<>> work_opt;
 
 	make_shared(thread_opt);
 
 	make_shared(work_opt, thread_opt);
 
-#if 1
 	if (!work_opt->start_work())
 		return 1;
-#else
-		std::function<void(boost::asio::yield_context yc)> f;
-		{
 
-			
-			{
-				f = std::bind(&get_url_work<>::work_loop_enter, work_opt, std::placeholders::_1);
-			}
-			std::function<void(boost::asio::yield_context yc)>& f2 = f;
-			boost::asio::spawn(*thread_opt->get_io(), f2);
-		}
-#endif
 
 	
 

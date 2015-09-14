@@ -52,3 +52,9 @@ boost::asio::io_service& task_work_base::get_io()
 {
 	return *thread_opt->get_io();
 }
+
+boost::shared_ptr<b_net_acceptor_api> task_work_base::make_acceptor()
+{
+	return thread_opt->make_acceptor();
+}
+
