@@ -33,15 +33,6 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="boost_net_base.hpp">
-      <Filter>net</Filter>
-    </ClInclude>
-    <ClInclude Include="boost_log.h">
-      <Filter>net</Filter>
-    </ClInclude>
-    <ClInclude Include="net_tools.h">
-      <Filter>net</Filter>
-    </ClInclude>
     <ClInclude Include="boost_net_socket.hpp">
       <Filter>net</Filter>
     </ClInclude>
@@ -71,6 +62,18 @@
     </ClInclude>
     <ClInclude Include="demo_work.hpp">
       <Filter>work</Filter>
+    </ClInclude>
+    <ClInclude Include="echo_server.hpp">
+      <Filter>work</Filter>
+    </ClInclude>
+    <ClInclude Include="get_url_work.hpp">
+      <Filter>work</Filter>
+    </ClInclude>
+    <ClInclude Include="net_tools.hpp">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="boost_log.hpp">
+      <Filter>net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

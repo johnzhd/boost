@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -8,9 +9,25 @@
 
 #include <boost/format.hpp>
 
-#include "boost_log.h"
 
-#include "net_tools.h"
+#include <string>
+#include <boost/asio.hpp>
+
+#include "boost_log.hpp"
+
+
+std::string to_ip(unsigned int ip);
+
+unsigned int to_ip(std::string ip);
+
+boost::asio::ip::tcp::endpoint to_endpoint(unsigned long address, unsigned short port);
+
+boost::asio::ip::tcp::endpoint to_endpoint(std::string address, std::string port);
+
+boost::asio::ip::tcp::endpoint to_endpoint(std::string address, unsigned short port);
+
+boost::asio::ip::tcp::endpoint to_endpoint(unsigned long address, std::string port);
+
 
 
 template<typename T, typename...Args>
@@ -28,10 +45,7 @@ inline std::string to_string(const T& t)
 }
 
 
-inline boost::format& format_core(boost::format& f)
-{
-	return f;
-}
+boost::format& format_core(boost::format& f);
 
 template<typename T>
 boost::format& format_core(boost::format& f, const T& t1)
@@ -70,7 +84,5 @@ public:
 protected:
 	F_D d;
 };
-
-
 
 

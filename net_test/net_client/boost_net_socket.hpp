@@ -25,7 +25,6 @@
 #include <assert.h>
 
 
-
 boost::asio::ip::tcp::endpoint dns(boost::asio::yield_context yc,
 	boost::system::error_code& ec,
 	boost::asio::ip::tcp::resolver& resolver,
@@ -43,19 +42,6 @@ auto dns(Func handler,
 }
 
 
-typedef enum protocal_type
-{
-	HTTP = 0,  // for http_base
-	HTTPS,     // for https_base
-}protocal_type;
-
-class base_core
-{
-public:
-	base_core(boost::asio::io_service& io);
-	virtual ~base_core();
-public:
-};
 
 class http_base : public boost::noncopyable
 {

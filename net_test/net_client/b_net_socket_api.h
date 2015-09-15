@@ -2,9 +2,16 @@
 
 #include <vector>
 
-#include "net_tools.h"
-#include "boost_net_base.hpp"
+#include "net_tools.hpp"
 #include "boost_net_socket.hpp"
+
+
+typedef enum protocal_type
+{
+	HTTP = 0,  // for http_base
+	HTTPS,     // for https_base
+}protocal_type;
+
 
 class protocal_socket
 {
@@ -16,6 +23,7 @@ public:
 	protocal_socket(boost::shared_ptr<https_base> hs);
 	protocal_socket();
 };
+
 
 class b_net_socket_api : public boost::enable_shared_from_this<b_net_socket_api>
 {

@@ -22,13 +22,12 @@
     <ProjectGuid>{6B998BDB-7CB0-47A3-B671-19FBA89450D9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>net_client</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -71,8 +70,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\boost_1_58_0;D:\cryptopp562;D:\OpenSSL-Win32\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\boost_1_58_0\stage\lib;D:\cryptopp562\Win32\Output\Debug;D:\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\my_folder\boost_1_59_0;C:\my_folder\cryptopp562;C:\my_folder\OpenSSL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\my_folder\boost_1_59_0\stage\lib;C:\my_folder\cryptopp562\Win32\Output\Debug;C:\my_folder\OpenSSL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -149,17 +148,18 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="boost_log.h" />
-    <ClInclude Include="boost_net_base.hpp" />
+    <ClInclude Include="boost_log.hpp" />
     <ClInclude Include="boost_net_socket.hpp" />
     <ClInclude Include="b_net_socket_api.h" />
     <ClInclude Include="demo_work.hpp" />
+    <ClInclude Include="echo_server.hpp" />
+    <ClInclude Include="get_url_work.hpp" />
     <ClInclude Include="gzip_api.h" />
     <ClInclude Include="http_maker.hpp" />
     <ClInclude Include="http_parser.h" />
     <ClInclude Include="http_parser_api.h" />
     <ClInclude Include="net_api.hpp" />
-    <ClInclude Include="net_tools.h" />
+    <ClInclude Include="net_tools.hpp" />
     <ClInclude Include="parser_tools.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

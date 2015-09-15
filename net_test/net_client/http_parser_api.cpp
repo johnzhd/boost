@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-#include "boost_net_base.hpp"
+#include "net_tools.hpp"
 
 http_parser_api::http_parser_api()
 {

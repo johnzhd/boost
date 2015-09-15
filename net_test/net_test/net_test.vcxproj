@@ -41,8 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>e:\boost_1_55_0\;C:\OpenSSL-Win32\include;e:\cryptopp562;$(IncludePath)</IncludePath>
-    <LibraryPath>e:\boost_1_55_0\stage\lib;C:\OpenSSL-Win32\lib\VC\static;e:\cryptopp562\Win32\Output\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\my_folder\boost_1_59_0;C:\my_folder\cryptopp562;C:\my_folder\OpenSSL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\my_folder\boost_1_59_0\stage\lib;C:\my_folder\cryptopp562\Win32\Output\Debug;C:\my_folder\OpenSSL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

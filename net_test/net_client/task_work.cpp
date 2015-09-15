@@ -2,7 +2,7 @@
 #include "task_work.h"
 
 #include "gzip_api.h"
-#include "net_tools.h"
+#include "net_tools.hpp"
 #include "http_maker.hpp"
 #include "http_parser_api.h"
 #include "parser_tools.h"

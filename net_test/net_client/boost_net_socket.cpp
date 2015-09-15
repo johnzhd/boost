@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "boost_net_socket.hpp"
 
-
-#include "boost_net_base.hpp"
+#include "net_tools.hpp"
 
 boost::asio::ip::tcp::endpoint dns(boost::asio::yield_context yc,
 	boost::system::error_code& ec,
