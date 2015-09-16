@@ -38,3 +38,4 @@ V	971016035001Z		011A	unknown	/C=AU/SP=Queensland/O=Mincom Pty Ltd/OU=MTR/CN=tes
 V	971016080129Z		011B	unknown	/C=FR/O=ALCATEL/OU=Alcatel Mobile Phones/CN=bourque/Email=bourque@art.alcatel.fr
 V	971016224000Z		011D	unknown	/L=Bedford/O=Cranfield University/OU=Computer Centre/CN=Peter R Lister/Email=P.Lister@cranfield.ac.uk
 V	160914082724Z		011E	unknown	/C=CN/ST=BEIJING/O=DE/OU=DE/CN=127.0.0.1/emailAddress=127@server.com
+V	160915053953Z		011F	unknown	/C=CN/ST=BJ/O=DE/OU=DE/CN=127.0.0.1/emailAddress=127@server.com

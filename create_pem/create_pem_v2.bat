@@ -3,7 +3,7 @@ SET path=%path%;%openssl_path%
 SET OPENSSL_CONF=%openssl_path%\openssl.cfg
 
 REM 1 ca private key
-openssl genrsa -des3 -out ca.key 2048
+openssl genrsa -aes256 -out ca.key 2048
 
 
 REM 2 ca decrypted private key
@@ -13,7 +13,7 @@ REM 3 ca public key
 openssl req -new -x509 -days 7305 -key ca.key -out ca.crt
 
 REM 4 server private key
-openssl genrsa -des3 -out server.key 2048
+openssl genrsa -aes256 -out server.key 2048
 
 REM 5 server decrypted private key
 openssl rsa -in server.key -out server.key2
