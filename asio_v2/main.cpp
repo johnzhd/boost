@@ -20,7 +20,7 @@ int main()
 {
 	boost::shared_ptr<net_thread> thread_opt;
 	boost::shared_ptr<echo_server<>> work_opt;
-
+	
 	make_shared(thread_opt);
 
 	make_shared(work_opt, thread_opt);
