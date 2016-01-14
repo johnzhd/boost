@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{c3d1ee91-073b-4551-9c34-373f97406fd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{339c36b6-c71d-43e2-bed0-5c75f64c3e3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="file">
+      <UniqueIdentifier>{d512a8ee-7dea-4d2f-bd3d-11a4f36140e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="parser">
+      <UniqueIdentifier>{1c1b5fa5-8ae0-4a71-aa39-07621c997ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="parser\http">
+      <UniqueIdentifier>{2965103c-b14f-4898-8be0-69f489669bfa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="string_tools.hpp">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="memory_tools.hpp">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="asio_tools.hpp">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="socket_base.hpp">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net_define.hpp">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="file_tools.hpp">
+      <Filter>file</Filter>
+    </ClInclude>
+    <ClInclude Include="log_tools.hpp">
+      <Filter>file</Filter>
+    </ClInclude>
+    <ClInclude Include="http_parser_api.hpp">
+      <Filter>parser</Filter>
+    </ClInclude>
+    <ClInclude Include="http_parser.h">
+      <Filter>parser\http</Filter>
+    </ClInclude>
+    <ClInclude Include="socket_work.hpp">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="asio_io_service.hpp">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="format_convert.hpp">
+      <Filter>base</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="string_tools.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="http_parser.c">
+      <Filter>parser\http</Filter>
+    </ClCompile>
+    <ClCompile Include="http_parser_api.cpp">
+      <Filter>parser\http</Filter>
+    </ClCompile>
+    <ClCompile Include="asio_tools.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="socket_base.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="file_tools.cpp">
+      <Filter>file</Filter>
+    </ClCompile>
+    <ClCompile Include="log_tools.cpp">
+      <Filter>file</Filter>
+    </ClCompile>
+    <ClCompile Include="socket_work.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="format_convert.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
